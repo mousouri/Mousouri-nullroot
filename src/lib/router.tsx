@@ -30,7 +30,8 @@ export type Route =
   | { page: "ama" }
   | { page: "resume" }
   | { page: "guestbook" }
-  | { page: "vault" };
+  | { page: "vault" }
+  | { page: "station" };
 
 export function parsePath(pathname: string): Route {
   const seg = pathname.split("/").filter(Boolean);
@@ -57,6 +58,8 @@ export function parsePath(pathname: string): Route {
       return { page: "guestbook" };
     case "vault":
       return { page: "vault" };
+    case "station":
+      return { page: "station" };
     default:
       return { page: "home" };
   }
@@ -90,6 +93,8 @@ export function routeToPath(r: Route): string {
       return "/guestbook";
     case "vault":
       return "/vault";
+    case "station":
+      return "/station";
   }
 }
 
@@ -134,6 +139,8 @@ export function routeLabel(r: Route): string {
       return "~/GUESTBOOK";
     case "vault":
       return "~/VAULT";
+    case "station":
+      return "~/STATION";
   }
 }
 

@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { useRoute } from "@/lib/router";
+import { navigate, useRoute } from "@/lib/router";
 import { scrollStore } from "@/hooks/use-smooth-scroll";
 import { setOverlay } from "@/lib/shell";
 import { playSfx } from "@/lib/sound";
-import { useLofi, toggleLofi } from "@/lib/lofi";
+import { useLofi } from "@/lib/lofi";
 
 /* ============================================================
    STATUS BAR — a tmux-style statusline pinned to the viewport
@@ -88,10 +88,9 @@ export function StatusBar() {
     playSfx("ok");
     setOverlay("palette");
   };
-  const toggleMusic = () => {
-    const on = toggleLofi();
+  const openStation = () => {
     playSfx("ok");
-    void on;
+    navigate({ page: "station" });
   };
 
   const feed = [...FEED, ...FEED]; // duplicated for the -50% marquee loop
@@ -127,11 +126,11 @@ export function StatusBar() {
         </div>
 
         <div className="ml-auto flex shrink-0 items-center gap-3 md:gap-4">
-          {/* LO-FI.WAV — procedural radio, zero streams */}
+          {/* LO-FI.WAV — opens the full station page */}
           <button
-            onClick={toggleMusic}
-            data-cursor={lofi ? "PAUSE" : "PLAY"}
-            title="LO-FI.WAV — procedural status-bar radio (generated live, no files)"
+            onClick={openStation}
+            data-cursor="STATION"
+            title="Open the station — procedural radio, generated live, no files"
             className={`flex items-center gap-1.5 ${lofi ? "text-acid" : "text-dim hover:text-paper"}`}
           >
             <span className="hidden sm:inline">LO-FI.WAV</span>

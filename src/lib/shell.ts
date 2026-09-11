@@ -73,6 +73,7 @@ const GOTO_ROUTES: Record<string, Parameters<typeof navigate>[0]> = {
   resume: { page: "resume" },
   guestbook: { page: "guestbook" },
   vault: { page: "vault" },
+  station: { page: "station" },
 };
 
 const GOTO_SECTIONS: Record<string, string> = {
@@ -171,10 +172,10 @@ export const COMMANDS: ShellCommand[] = [
     run(argv, io) {
       const all = argv.some((a) => /^-{1,2}a/.test(a));
       if (all) {
-        io.print(".  ..  .flag  .plan  work/  notes/  arcade/  stack/  now/  timeline/  ama/  resume/  guestbook/  manifesto.txt  socials.txt", "out");
+        io.print(".  ..  .flag  .plan  work/  notes/  arcade/  station/  stack/  now/  timeline/  ama/  resume/  guestbook/  manifesto.txt  socials.txt", "out");
         io.print(".flag — hidden things are usually the interesting ones", "dim");
       } else {
-        io.print("work/  notes/  arcade/  stack/  now/  timeline/  ama/  resume/  manifesto.txt  .plan  socials.txt", "out");
+        io.print("work/  notes/  arcade/  station/  stack/  now/  timeline/  ama/  resume/  manifesto.txt  .plan  socials.txt", "out");
       }
     },
   },
@@ -626,4 +627,5 @@ export const PALETTE_ROUTES: Array<{ label: string; target: string; hint: string
   { label: "goto botnetgrow", target: "botnetgrow", hint: "BOTNET.GROW" },
   { label: "goto hopexe", target: "hopexe", hint: "HOP.EXE" },
   { label: "goto guestbook", target: "guestbook", hint: "sign the wall" },
+  { label: "goto station", target: "station", hint: "LO-FI.WAV" },
 ];

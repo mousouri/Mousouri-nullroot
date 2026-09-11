@@ -1,0 +1,406 @@
+@import "tailwindcss";
+
+/* ============================================================
+   MOUSOURI — brutalist design tokens (Tailwind 4 CSS-first)
+   Two-tone palette + one hostile accent. Sharp corners only.
+   ============================================================ */
+
+:root {
+  --ink: #0a0a0a; /* off-black, never pure black */
+  --paper: #f2f0ea; /* off-white                     */
+  --acid: #d7ff3f; /* electric lime — use violently */
+  --line: rgba(242, 240, 234, 0.14);
+  --line-strong: rgba(242, 240, 234, 0.34);
+  --dim: rgba(242, 240, 234, 0.56);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-sharp: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ---------- colorways (lib/theme.ts drives data-theme) ---------- */
+
+html[data-theme="matrix"] {
+  --acid: #00ff66; /* phosphor green — the desert of the real */
+}
+
+html[data-theme="amber"] {
+  --acid: #ffb000; /* 1978 terminal warmth */
+}
+
+html[data-theme="void"] {
+  --acid: #ff3f6f; /* signal red — earned, not given (see: CTF) */
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-acid: var(--acid);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-dim: var(--dim);
+  --font-display: var(--font-anton), "Arial Narrow", "Impact", sans-serif;
+  --font-body: var(--font-grotesk), system-ui, sans-serif;
+  --font-mono: var(--font-jbmono), "Courier New", monospace;
+}
+
+/* ---------- base ---------- */
+
+html {
+  background: var(--ink);
+  scroll-behavior: auto; /* Lenis owns scrolling */
+}
+
+body {
+  background: var(--ink);
+  color: var(--paper);
+  overflow-x: clip;
+  /* clearance for the fixed status bar (h-7) */
+  padding-bottom: 28px;
+}
+
+::selection {
+  background: var(--acid);
+  color: var(--ink);
+}
+
+/* hide native cursor only when the custom one is active (fine pointers) */
+@media (pointer: fine) {
+  html.custom-cursor,
+  html.custom-cursor * {
+    cursor: none !important;
+  }
+}
+
+:focus-visible {
+  outline: 1px solid var(--acid);
+  outline-offset: 3px;
+}
+
+/* thin acid scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--ink);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--acid);
+}
+
+/* ---------- lenis ---------- */
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+/* covers both lenis-owned stops and the manual no-lenis (reduced motion) lock */
+html.lenis-stopped {
+  overflow: hidden;
+}
+/* preloader boot window — lock scroll before hydration settles */
+html.boot-locked {
+  overflow: hidden;
+}
+
+/* ---------- utilities ---------- */
+
+/* outlined display text */
+@utility text-stroke {
+  -webkit-text-stroke: 1px var(--paper);
+  color: transparent;
+}
+@utility text-stroke-acid {
+  -webkit-text-stroke: 1px var(--acid);
+  color: transparent;
+}
+@utility text-stroke-ink {
+  -webkit-text-stroke: 1px var(--ink);
+  color: transparent;
+}
+
+/* underline draw-in on hover (not text-decoration) */
+@utility u-draw {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-repeat: no-repeat;
+  background-position: left calc(100% - 0.05em);
+  transition: background-size 0.4s var(--ease-out-expo);
+}
+.u-draw:hover {
+  background-size: 100% 1px;
+}
+
+/* CRT scanlines — tiled overlay layer */
+@utility scanlines {
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(242, 240, 234, 0.028) 0px,
+    rgba(242, 240, 234, 0.028) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+}
+
+/* film grain — SVG turbulence, tiled */
+@utility grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+}
+
+/* dotted inspection grid used in project visuals */
+@utility dotfield {
+  background-image: radial-gradient(rgba(242, 240, 234, 0.22) 1px, transparent 1px);
+  background-size: 14px 14px;
+}
+
+/* ---------- keyframes ---------- */
+
+@keyframes blink-block {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+.blink-block {
+  animation: blink-block 1.06s steps(1) infinite;
+}
+
+/* game caret blink (arbitrary-name keyframe used by TTY.RACER) */
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* CRT power-on: white-hot line snaps open into a full frame */
+@keyframes crt-on {
+  0% {
+    transform: scaleY(0.004);
+    filter: brightness(6) saturate(0.4);
+  }
+  55% {
+    transform: scaleY(1.02);
+    filter: brightness(1.8);
+  }
+  100% {
+    transform: scaleY(1);
+    filter: brightness(1);
+  }
+}
+.crt-on {
+  animation: crt-on 0.7s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+.pulse-dot {
+  animation: pulse-dot 1.4s var(--ease-sharp) infinite;
+}
+
+@keyframes grain-shift {
+  0% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(-3%, 2%);
+  }
+  40% {
+    transform: translate(2%, -3%);
+  }
+  60% {
+    transform: translate(-2%, -2%);
+  }
+  80% {
+    transform: translate(3%, 3%);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+.grain-shift {
+  animation: grain-shift 9s steps(6) infinite;
+}
+
+/* CSS marquee fallback (non-Lenis / reduced-capability envs) */
+@keyframes marquee-x {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* status-bar packet feed — one direction, slow, endless */
+.feed-track {
+  animation: marquee-x 36s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feed-track {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain-shift,
+  .blink-block,
+  .pulse-dot,
+  .crt-on {
+    animation: none;
+  }
+}
+
+/* terminal / palette inputs — acid caret, no ugly mobile tap highlight */
+.nr-input {
+  caret-color: var(--acid);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* IDEA.BULB — filament flicker while warming, steady glow when lit */
+@keyframes bulb-flicker {
+  0%, 100% { opacity: 1; }
+  6% { opacity: 0.15; }
+  14% { opacity: 0.85; }
+  22% { opacity: 0.25; }
+  38% { opacity: 0.95; }
+  52% { opacity: 0.35; }
+  66% { opacity: 1; }
+  80% { opacity: 0.6; }
+}
+.bulb-flicker {
+  animation: bulb-flicker 0.9s steps(1, end) both;
+}
+.bulb-lit {
+  filter: drop-shadow(0 0 14px var(--acid))
+    drop-shadow(0 0 44px color-mix(in srgb, var(--acid) 40%, transparent));
+}
+@media (prefers-reduced-motion: reduce) {
+  .bulb-flicker {
+    animation: none;
+  }
+}
+
+/* ---------- LO-FI.WAV equalizer bars (status bar) ---------- */
+.eq {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 11px;
+}
+.eq i {
+  display: block;
+  width: 2.5px;
+  height: 4px;
+  background: currentColor;
+  opacity: 0.75;
+  transform-origin: bottom;
+}
+.eq-on i {
+  animation: eq-bounce 0.9s ease-in-out infinite;
+}
+.eq-on i:nth-child(2) {
+  animation-duration: 0.72s;
+  animation-delay: 0.12s;
+}
+.eq-on i:nth-child(3) {
+  animation-duration: 1.05s;
+  animation-delay: 0.24s;
+}
+@keyframes eq-bounce {
+  0%, 100% { height: 3px; }
+  35% { height: 11px; }
+  60% { height: 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .eq-on i {
+    animation: none;
+    height: 7px;
+  }
+}
+
+/* ---------- GOD MODE — konami unlock. 10s of chromatic shame ---------- */
+@keyframes god-hue {
+  from { filter: hue-rotate(0deg) saturate(1.4); }
+  to { filter: hue-rotate(360deg) saturate(1.4); }
+}
+@keyframes god-jitter {
+  0%, 92%, 100% { transform: translate(0, 0); }
+  93% { transform: translate(-1.5px, 1px); }
+  95% { transform: translate(2px, -1px); }
+  97% { transform: translate(-1px, -1.5px); }
+}
+html.godmode body {
+  animation:
+    god-hue 1.2s linear infinite,
+    god-jitter 3.4s steps(1, end) infinite;
+}
+html.godmode::after {
+  content: "GOD MODE — 10s";
+  position: fixed;
+  top: 3.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 300;
+  padding: 4px 14px;
+  border: 2px solid currentColor;
+  background: rgba(0, 0, 0, 0.85);
+  color: var(--acid);
+  font-family: var(--font-jbmono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.godmode body {
+    animation: god-hue 6s linear infinite;
+  }
+}
+
+/* ---------- print — only the résumé sheet survives ---------- */
+@media print {
+  header,
+  footer,
+  .no-print,
+  .print\:hidden {
+    display: none !important;
+  }
+  html,
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .resume-sheet {
+    border: 1px solid #000 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    padding: 24px !important;
+  }
+  .resume-sheet * {
+    color: #000000 !important;
+  }
+  .resume-sheet .text-dim,
+  .resume-sheet .text-paper\/75,
+  .resume-sheet .text-paper\/85 {
+    color: #444444 !important;
+  }
+}

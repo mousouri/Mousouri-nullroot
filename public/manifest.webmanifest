@@ -1,0 +1,22 @@
+{
+  "name": "MOUSOURI — Breaking Things on Purpose",
+  "short_name": "MOUSOURI",
+  "description": "Offensive security, MQL5 algo trading, full-stack web, embedded — a brutalist terminal portfolio with a 14-cabinet arcade. Works offline.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "orientation": "portrait-primary",
+  "categories": ["portfolio", "developer", "games"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "The Arcade", "url": "/arcade", "description": "14 playable cabinets" },
+    { "name": "The Stack", "url": "/stack", "description": "Tech arsenal + idea bulb" },
+    { "name": "Now", "url": "/now", "description": "The live page" }
+  ]
+}

@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { usePathname } from "next/navigation";
 import { requestNavigation } from "@/lib/transition";
+import { startLofi } from "@/lib/lofi";
 
 /* ============================================================
    MOUSOURI route model — real pages now.
@@ -156,6 +157,15 @@ export function useRoute(): Route {
  * rows) keep this exact signature.
  */
 export function navigate(r: Route): void {
+  // Starting the radio has to happen synchronously inside the click/tap
+  // that got us here — iOS Safari only unlocks an AudioContext within a
+  // real gesture's own call stack, not in a useEffect once the route has
+  // already landed. Doing it here, before the transition even starts,
+  // covers every way into /station (nav link, status bar, terminal,
+  // palette) in one place. Once unlocked the context stays unlocked for
+  // the rest of the session, so the scheduler starting moments later
+  // (after StationScreen mounts) plays fine.
+  if (r.page === "station") startLofi();
   requestNavigation(routeToPath(r));
 }
 

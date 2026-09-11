@@ -386,24 +386,46 @@ function tick() {
   }
 }
 
+let starting = false;
+
 export function startLofi() {
-  if (playing) return;
+  if (playing || starting) return;
   ensureStationLoaded();
   const c = getCtx();
   if (!c) return;
   primeAudio();
-  void c.resume();
-  playing = true;
-  startedOnce = true;
-  try {
-    window.localStorage.setItem("nr-lofi", "1");
-  } catch {
-    /* non-persistent is fine */
-  }
-  nextTime = c.currentTime + 0.06;
-  listenMark = performance.now();
-  schedTimer = window.setInterval(tick, 50);
-  notify();
+  starting = true;
+  // resume() only actually resolves once the browser's autoplay policy
+  // grants it — Safari in particular refuses unless this call is inside
+  // a direct gesture handler, and then just leaves the promise pending
+  // forever rather than rejecting it. Don't claim "playing" until it's
+  // real (so a blocked auto-start leaves the UI honestly idle instead of
+  // showing PAUSE over silence), and release the guard after a beat so a
+  // real tap on PLAY afterward can still retry instead of being stuck.
+  const giveUp = window.setTimeout(() => {
+    starting = false;
+  }, 400);
+  c.resume()
+    .then(() => {
+      window.clearTimeout(giveUp);
+      starting = false;
+      if (playing || c.state !== "running") return;
+      playing = true;
+      startedOnce = true;
+      try {
+        window.localStorage.setItem("nr-lofi", "1");
+      } catch {
+        /* non-persistent is fine */
+      }
+      nextTime = c.currentTime + 0.06;
+      listenMark = performance.now();
+      schedTimer = window.setInterval(tick, 50);
+      notify();
+    })
+    .catch(() => {
+      window.clearTimeout(giveUp);
+      starting = false;
+    });
 }
 
 export function stopLofi() {

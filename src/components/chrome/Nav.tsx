@@ -18,7 +18,8 @@ const LINKS: NavLink[] = [
   { n: "04", label: "NOTES", route: { page: "notes" } },
   { n: "05", label: "ARCADE", route: { page: "arcade" } },
   { n: "06", label: "NOW", route: { page: "now" } },
-  { n: "07", label: "CONTACT", href: "#contact" },
+  { n: "07", label: "STATION", route: { page: "station" } },
+  { n: "08", label: "CONTACT", href: "#contact" },
 ];
 
 function useClock() {
@@ -231,6 +232,8 @@ function hashTrail(r: ReturnType<typeof useRoute>): string {
       return "— ama/";
     case "resume":
       return "— resume/";
+    case "station":
+      return "— station/";
     default:
       return "— main( )";
   }
